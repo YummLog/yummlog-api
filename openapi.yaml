@@ -79,10 +79,8 @@ components:
     FoodPost:
       type: object
       required:
-        - id
         - restaurantName
         - foodItems
-        - experience
       properties:
         id:
           type: string
@@ -107,11 +105,23 @@ components:
         foodItems:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/FoodItems'
         experience:
           type: string
         notes:
           type: string
+    FoodItems:
+      type: object
+      required:
+        - name
+        - experience
+      properties:
+        name:
+          type: string
+          description: name of the food item
+        experience:
+          type: string
+          description: like, dislike or loved it
     Error:
       type: object
       required:
