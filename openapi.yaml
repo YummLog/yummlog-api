@@ -1,0 +1,132 @@
+openapi: 3.0.0
+info:
+  version: '1.0.0'
+  title: 'YummLog'
+  license:
+    name: MIT
+servers:
+  - url: 'http://localhost:3000/v1'
+
+paths:
+  /foodpost:
+    get:
+      summary: 'list of foodposts'
+      operationId: listFoodPosts
+      tags:
+        - foodpost
+      parameters:
+        - name: restaurantName
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'list of food posts'
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoodPostsList'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: 'create food post'
+      operationId: createFoodPost
+      tags:
+        - foodpost
+      parameters:
+        - name: restaurantName
+          in: query
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: 'food post payload'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FoodPost'
+      responses:
+        '201':
+          description: 'Created food post'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoodPost'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    FoodPostsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/FoodPost'
+    FoodPost:
+      type: object
+      required:
+        - id
+        - restaurantName
+        - foodItems
+        - experience
+      properties:
+        id:
+          type: string
+          format: uuid
+        restaurantName:
+          type: string
+        date:
+          type: string
+          format: date-time
+        address1:
+          type: string
+        address2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        zip:
+          type: string
+        foodItems:
+          type: array
+          items:
+            type: string
+        experience:
+          type: string
+        notes:
+          type: string
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+security:
+  - BasicAuth: []
