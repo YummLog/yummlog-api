@@ -11,6 +11,15 @@ const (
 	BasicAuthScopes = "BasicAuth.Scopes"
 )
 
+// Defines values for FoodItemsExperience.
+const (
+	FoodItemsExperienceDislike FoodItemsExperience = "dislike"
+
+	FoodItemsExperienceFavorite FoodItemsExperience = "favorite"
+
+	FoodItemsExperienceLike FoodItemsExperience = "like"
+)
+
 // Error defines model for Error.
 type Error struct {
 	Code    int32  `json:"code"`
@@ -20,11 +29,14 @@ type Error struct {
 // FoodItems defines model for FoodItems.
 type FoodItems struct {
 	// like, dislike or loved it
-	Experience string `json:"experience"`
+	Experience FoodItemsExperience `json:"experience"`
 
 	// name of the food item
 	Name string `json:"name"`
 }
+
+// like, dislike or loved it
+type FoodItemsExperience string
 
 // FoodPost defines model for FoodPost.
 type FoodPost struct {
@@ -33,7 +45,6 @@ type FoodPost struct {
 	City           *string     `json:"city,omitempty"`
 	Country        *string     `json:"country,omitempty"`
 	Date           *time.Time  `json:"date,omitempty"`
-	Experience     *string     `json:"experience,omitempty"`
 	FoodItems      []FoodItems `json:"foodItems"`
 	Id             *string     `json:"id,omitempty"`
 	Notes          *string     `json:"notes,omitempty"`
@@ -43,7 +54,12 @@ type FoodPost struct {
 }
 
 // FoodPostsList defines model for FoodPostsList.
-type FoodPostsList []FoodPost
+type FoodPostsList struct {
+	FoodPosts *[]FoodPost `json:"foodPosts,omitempty"`
+	Page      *int        `json:"page,omitempty"`
+	PageSize  *int        `json:"pageSize,omitempty"`
+	Total     *int        `json:"total,omitempty"`
+}
 
 // ListFoodPostsParams defines parameters for ListFoodPosts.
 type ListFoodPostsParams struct {
@@ -52,11 +68,6 @@ type ListFoodPostsParams struct {
 
 // CreateFoodPostJSONBody defines parameters for CreateFoodPost.
 type CreateFoodPostJSONBody FoodPost
-
-// CreateFoodPostParams defines parameters for CreateFoodPost.
-type CreateFoodPostParams struct {
-	RestaurantName *string `json:"restaurantName,omitempty"`
-}
 
 // CreateFoodPostJSONRequestBody defines body for CreateFoodPost for application/json ContentType.
 type CreateFoodPostJSONRequestBody CreateFoodPostJSONBody

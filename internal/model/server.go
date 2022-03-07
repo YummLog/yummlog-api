@@ -18,7 +18,7 @@ type ServerInterface interface {
 	ListFoodPosts(c *gin.Context, params ListFoodPostsParams)
 	// create food post
 	// (POST /foodpost)
-	CreateFoodPost(c *gin.Context, params CreateFoodPostParams)
+	CreateFoodPost(c *gin.Context)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -60,29 +60,13 @@ func (siw *ServerInterfaceWrapper) ListFoodPosts(c *gin.Context) {
 // CreateFoodPost operation middleware
 func (siw *ServerInterfaceWrapper) CreateFoodPost(c *gin.Context) {
 
-	var err error
-
 	c.Set(BasicAuthScopes, []string{""})
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params CreateFoodPostParams
-
-	// ------------- Optional query parameter "restaurantName" -------------
-	if paramValue := c.Query("restaurantName"); paramValue != "" {
-
-	}
-
-	err = runtime.BindQueryParameter("form", true, false, "restaurantName", c.Request.URL.Query(), &params.RestaurantName)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"msg": fmt.Sprintf("Invalid format for parameter restaurantName: %s", err)})
-		return
-	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
 	}
 
-	siw.Handler.CreateFoodPost(c, params)
+	siw.Handler.CreateFoodPost(c)
 }
 
 // GinServerOptions provides options for the Gin server.

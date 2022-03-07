@@ -43,12 +43,6 @@ paths:
       operationId: createFoodPost
       tags:
         - foodpost
-      parameters:
-        - name: restaurantName
-          in: query
-          required: false
-          schema:
-            type: string
       requestBody:
         description: 'food post payload'
         required: true
@@ -73,9 +67,18 @@ paths:
 components:
   schemas:
     FoodPostsList:
-      type: array
-      items:
-        $ref: '#/components/schemas/FoodPost'
+      type: object
+      properties:
+        foodPosts:
+          type: array
+          items:
+            $ref: '#/components/schemas/FoodPost'
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
     FoodPost:
       type: object
       required:
@@ -106,8 +109,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FoodItems'
-        experience:
-          type: string
         notes:
           type: string
     FoodItems:
@@ -121,6 +122,7 @@ components:
           description: name of the food item
         experience:
           type: string
+          enum: ["like", "dislike", "favorite"]
           description: like, dislike or loved it
     Error:
       type: object

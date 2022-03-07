@@ -18,3 +18,9 @@ docker build --tag yummlog-api .
 docker run --rm -p 3000:3000 yummlog-api
 ```
 
+## Postgres models
+
+```
+go get -u github.com/xo/xo
+```
+
