@@ -29,7 +29,17 @@ func (f *RESTController) ListFoodPosts(c *gin.Context, params model.ListFoodPost
 		})
 	}
 
-	c.JSON(http.StatusOK, listFoodPosts)
+	pg := 1
+	pgSize := 10
+	total := 100
+	res := model.FoodPostsList{
+		FoodPosts: listFoodPosts,
+		Page:      &pg,
+		PageSize:  &pgSize,
+		Total:     &total,
+	}
+
+	c.JSON(http.StatusOK, res)
 
 	//p := "Parsippany"
 	//nj := "New Jersey"
