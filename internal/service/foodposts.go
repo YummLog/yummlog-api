@@ -47,7 +47,7 @@ func (fps *FoodPostsService) CreateFoodPosts(ctx context.Context, fp db.Foodpost
 			return db.Foodpost{}, nil, err
 		}
 
-		a.PostId = createdFoodPost.ID
+		a.PostID = createdFoodPost.ID
 		cpd, e := fps.Writer.CreatePostDetails(ctx, a)
 		if e != nil {
 			return db.Foodpost{}, nil, err

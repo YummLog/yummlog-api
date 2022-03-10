@@ -15,7 +15,7 @@ func MapDBFoodPostToDBCreateFoodPostParams(fp db.Foodpost) (db.CreateFoodPostPar
 		State:          fp.State,
 		Country:        fp.Country,
 		Zipcode:        fp.Zipcode,
-		UserId:         fp.UserId,
+		UserID:         fp.UserID,
 		CreatedBy:      fp.CreatedBy,
 		CreatedDate:    fp.CreatedDate,
 		UpdatedBy:      fp.UpdatedBy,
@@ -27,7 +27,7 @@ func MapDBFoodPostToDBCreateFoodPostParams(fp db.Foodpost) (db.CreateFoodPostPar
 func MapDBPostDetailsToDBCreatePostDetailsParams(pd db.Postdetail) (db.CreatePostDetailsParams, error) {
 	return db.CreatePostDetailsParams{
 		ID:         pd.ID,
-		PostId:     pd.PostId,
+		PostID:     pd.PostID,
 		Item:       pd.Item,
 		Experience: pd.Experience,
 	}, nil

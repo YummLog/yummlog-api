@@ -53,7 +53,7 @@ func MapAPIFoodPostToDBFoodpost(fp model.FoodPost) (db.Foodpost, error) {
 		State:          state,
 		Country:        country,
 		Zipcode:        zipCode,
-		UserId:         sql.NullString{},
+		UserID:         sql.NullString{},
 		CreatedBy:      sql.NullString{},
 		CreatedDate:    sql.NullTime{},
 		UpdatedBy:      sql.NullString{},
@@ -65,7 +65,7 @@ func MapAPIFoodPostToDBFoodpost(fp model.FoodPost) (db.Foodpost, error) {
 func MapAPIFoodPostToDBPostDetails(pd model.FoodItems) (db.Postdetail, error) {
 	return db.Postdetail{
 		ID:         "",
-		PostId:     "",
+		PostID:     "",
 		Item:       pd.Name,
 		Experience: string(pd.Experience),
 	}, nil

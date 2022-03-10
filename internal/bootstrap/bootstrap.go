@@ -4,6 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/kelseyhightower/envconfig"
+	_ "github.com/lib/pq"
+	"log"
 	"yummlog/internal/controller"
 	"yummlog/internal/db"
 	"yummlog/internal/service"
@@ -17,7 +20,7 @@ type AppConfig struct {
 
 type DBReadConfig struct {
 	Host     string `envconfig:"DB_READ_HOST" default:"localhost"`
-	Port     string `envconfig:"DB_READ_PORT" default:"5432"`
+	Port     int    `envconfig:"DB_READ_PORT" default:"5432""`
 	User     string `envconfig:"DB_READ_USER" default:"root"`
 	Password string `envconfig:"DB_READ_PASSWORD" default:"root"`
 	DB       string `envconfig:"DB_READ_NAME" default:"yummlog"`
@@ -26,12 +29,13 @@ type DBReadConfig struct {
 }
 
 func (dbr DBReadConfig) ConnectionString() string {
-	return fmt.Sprintf("host=%s port=%d dbname=%s user=%s password='%s' sslmode=%s search_path=%s", dbr.Host, dbr.Port, dbr.DB, dbr.User, dbr.Password, dbr.SSLMode, dbr.Schema)
+	return fmt.Sprintf("host=%s port=%d dbname=%s user=%s password='%s' sslmode=%s search_path=%s",
+		dbr.Host, dbr.Port, dbr.DB, dbr.User, dbr.Password, dbr.SSLMode, dbr.Schema)
 }
 
 type DBWriteConfig struct {
 	Host     string `envconfig:"DB_WRITE_HOST" default:"localhost"`
-	Port     string `envconfig:"DB_WRITE_PORT" default:"5432"`
+	Port     int    `envconfig:"DB_WRITE_PORT" default:"5432"`
 	User     string `envconfig:"DB_WRITE_USER" default:"root"`
 	Password string `envconfig:"DB_WRITE_PASSWORD" default:"root"`
 	DB       string `envconfig:"DB_WRITE_NAME" default:"yummlog"`
@@ -55,6 +59,21 @@ type Application struct {
 
 func NewApplication(ctx context.Context) (*Application, error) {
 	cfg := AppConfig{}
+
+	var dbr DBReadConfig
+	err := envconfig.Process("myapp", &dbr)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	var dbw DBWriteConfig
+	err = envconfig.Process("myapp", &dbw)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	cfg.DBReadConfig = dbr
+	cfg.DBWriteConfig = dbw
 
 	fps, err := newFoodPostsCRUD(ctx, &cfg)
 	if err != nil {

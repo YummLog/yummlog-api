@@ -11,22 +11,22 @@ import (
 const createFoodPost = `-- name: CreateFoodPost :one
 insert into foodposts(
     id,
-    "restaurantName",
+    restaurant_name,
     address1,
     address2,
     city,
     state,
     country,
     zipcode,
-    "userId",
-    "createdBy",
-    "createdDate",
-    "updatedBy",
-    "updatedDate",
+    user_id,
+    created_by,
+    created_date,
+    updated_by,
+    updated_date,
     notes
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
-) returning id, restaurantName, address1, address2, city, state, country, zipcode, userId, createdBy, createdDate, updatedBy, updatedDate, notes
+) returning id, restaurant_name, address1, address2, city, state, country, zipcode, user_id, created_by, created_date, updated_by, updated_date, notes
 `
 
 type CreateFoodPostParams struct {
@@ -38,7 +38,7 @@ type CreateFoodPostParams struct {
 	State          sql.NullString
 	Country        sql.NullString
 	Zipcode        sql.NullString
-	UserId         sql.NullString
+	UserID         sql.NullString
 	CreatedBy      sql.NullString
 	CreatedDate    sql.NullTime
 	UpdatedBy      sql.NullString
@@ -56,7 +56,7 @@ func (q *Queries) CreateFoodPost(ctx context.Context, arg CreateFoodPostParams) 
 		arg.State,
 		arg.Country,
 		arg.Zipcode,
-		arg.UserId,
+		arg.UserID,
 		arg.CreatedBy,
 		arg.CreatedDate,
 		arg.UpdatedBy,
@@ -73,7 +73,7 @@ func (q *Queries) CreateFoodPost(ctx context.Context, arg CreateFoodPostParams) 
 		&i.State,
 		&i.Country,
 		&i.Zipcode,
-		&i.UserId,
+		&i.UserID,
 		&i.CreatedBy,
 		&i.CreatedDate,
 		&i.UpdatedBy,
@@ -86,15 +86,15 @@ func (q *Queries) CreateFoodPost(ctx context.Context, arg CreateFoodPostParams) 
 const createPostDetails = `-- name: CreatePostDetails :one
 insert into postdetails(
     id,
-    "postId",
+    post_id,
     item,
     experience
-) values ($1, $2, $3, $4) returning id, postId, item, experience
+) values ($1, $2, $3, $4) returning id, post_id, item, experience
 `
 
 type CreatePostDetailsParams struct {
 	ID         string
-	PostId     string
+	PostID     string
 	Item       string
 	Experience string
 }
@@ -102,14 +102,14 @@ type CreatePostDetailsParams struct {
 func (q *Queries) CreatePostDetails(ctx context.Context, arg CreatePostDetailsParams) (Postdetail, error) {
 	row := q.db.QueryRowContext(ctx, createPostDetails,
 		arg.ID,
-		arg.PostId,
+		arg.PostID,
 		arg.Item,
 		arg.Experience,
 	)
 	var i Postdetail
 	err := row.Scan(
 		&i.ID,
-		&i.PostId,
+		&i.PostID,
 		&i.Item,
 		&i.Experience,
 	)
@@ -117,8 +117,8 @@ func (q *Queries) CreatePostDetails(ctx context.Context, arg CreatePostDetailsPa
 }
 
 const listFoodPosts = `-- name: ListFoodPosts :many
-SELECT fp.id, restaurantName, address1, address2, city, state, country, zipcode, userId, createdBy, createdDate, updatedBy, updatedDate, notes, pd.id, postId, item, experience
-FROM foodposts fp join postdetails pd on fp.id = pd."postId"
+SELECT fp.id, restaurant_name, address1, address2, city, state, country, zipcode, user_id, created_by, created_date, updated_by, updated_date, notes, pd.id, post_id, item, experience
+FROM foodposts fp join postdetails pd on fp.id = pd.post_id
 `
 
 type ListFoodPostsRow struct {
@@ -130,14 +130,14 @@ type ListFoodPostsRow struct {
 	State          sql.NullString
 	Country        sql.NullString
 	Zipcode        sql.NullString
-	UserId         sql.NullString
+	UserID         sql.NullString
 	CreatedBy      sql.NullString
 	CreatedDate    sql.NullTime
 	UpdatedBy      sql.NullString
 	UpdatedDate    sql.NullTime
 	Notes          sql.NullString
 	ID_2           string
-	PostId         string
+	PostID         string
 	Item           string
 	Experience     string
 }
@@ -160,14 +160,14 @@ func (q *Queries) ListFoodPosts(ctx context.Context) ([]ListFoodPostsRow, error)
 			&i.State,
 			&i.Country,
 			&i.Zipcode,
-			&i.UserId,
+			&i.UserID,
 			&i.CreatedBy,
 			&i.CreatedDate,
 			&i.UpdatedBy,
 			&i.UpdatedDate,
 			&i.Notes,
 			&i.ID_2,
-			&i.PostId,
+			&i.PostID,
 			&i.Item,
 			&i.Experience,
 		); err != nil {
@@ -185,7 +185,7 @@ func (q *Queries) ListFoodPosts(ctx context.Context) ([]ListFoodPostsRow, error)
 }
 
 const listPostDetails = `-- name: ListPostDetails :many
-SELECT id, postId, item, experience
+SELECT id, post_id, item, experience
 FROM postdetails
 `
 
@@ -200,7 +200,7 @@ func (q *Queries) ListPostDetails(ctx context.Context) ([]Postdetail, error) {
 		var i Postdetail
 		if err := rows.Scan(
 			&i.ID,
-			&i.PostId,
+			&i.PostID,
 			&i.Item,
 			&i.Experience,
 		); err != nil {

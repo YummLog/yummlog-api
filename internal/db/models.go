@@ -15,7 +15,7 @@ type Foodpost struct {
 	State          sql.NullString
 	Country        sql.NullString
 	Zipcode        sql.NullString
-	UserId         sql.NullString
+	UserID         sql.NullString
 	CreatedBy      sql.NullString
 	CreatedDate    sql.NullTime
 	UpdatedBy      sql.NullString
@@ -25,7 +25,7 @@ type Foodpost struct {
 
 type Postdetail struct {
 	ID         string
-	PostId     string
+	PostID     string
 	Item       string
 	Experience string
 }
