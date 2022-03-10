@@ -2,6 +2,7 @@ package controller
 
 import (
 	"database/sql"
+	"time"
 	"yummlog/internal"
 	"yummlog/internal/db"
 	"yummlog/internal/model"
@@ -53,6 +54,11 @@ func MapAPIFoodPostToDBFoodpost(fp model.FoodPost) (db.Foodpost, error) {
 		fp.Id = &foodPostsUUID
 	}
 
+	if fp.Date == nil {
+		t := time.Now()
+		fp.Date = &t
+	}
+
 	return db.Foodpost{
 		ID:             *fp.Id,
 		RestaurantName: fp.RestaurantName,
@@ -64,10 +70,16 @@ func MapAPIFoodPostToDBFoodpost(fp model.FoodPost) (db.Foodpost, error) {
 		Zipcode:        zipCode,
 		UserID:         sql.NullString{},
 		CreatedBy:      sql.NullString{},
-		CreatedDate:    sql.NullTime{},
-		UpdatedBy:      sql.NullString{},
-		UpdatedDate:    sql.NullTime{},
-		Notes:          notes,
+		CreatedDate: sql.NullTime{
+			Time:  *fp.Date,
+			Valid: true,
+		},
+		UpdatedBy: sql.NullString{},
+		UpdatedDate: sql.NullTime{
+			Time:  *fp.Date,
+			Valid: true,
+		},
+		Notes: notes,
 	}, nil
 }
 
