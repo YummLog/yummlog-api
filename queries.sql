@@ -1,6 +1,7 @@
 -- name: ListFoodPosts :many
-SELECT *
-FROM foodposts fp join postdetails pd on fp.id = pd.post_id;
+SELECT fp.*, pd.item, pd.experience
+FROM foodposts fp join postdetails pd on fp.id = pd.post_id
+ORDER BY fp.created_date, fp.id asc;
 
 -- name: CreateFoodPost :one
 insert into foodposts(

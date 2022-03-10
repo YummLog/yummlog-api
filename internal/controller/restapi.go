@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"time"
 	"yummlog/internal/db"
 	"yummlog/internal/model"
 	"yummlog/internal/service"
@@ -14,48 +13,66 @@ type RESTController struct {
 }
 
 func (f *RESTController) ListFoodPosts(c *gin.Context, params model.ListFoodPostsParams) {
-	p := "Parsippany"
-	nj := "New Jersey"
-	usa := "USA"
-	t := time.Now()
-	id := "121"
-	add1 := "1008 Route 36"
-	notes := "overall great experience"
-	pg := 1
-	pgSize := 10
-	total := 100
-	fpl := model.FoodPostsList{
-		FoodPosts: &[]model.FoodPost{
-			{
-				Id:             &id,
-				RestaurantName: "Adayar Ananda Bhavan",
-				City:           &p,
-				State:          &nj,
-				Country:        &usa,
-				Date:           &t,
-				Address1:       &add1,
-				FoodItems: []model.FoodItems{
-					{
-						Name:       "Full Meals",
-						Experience: model.FoodItemsExperienceLike,
-					},
-					{
-						Name:       "Chikoo Milk Shake",
-						Experience: model.FoodItemsExperienceFavorite,
-					},
-					{
-						Name:       "Chole Bature",
-						Experience: model.FoodItemsExperienceDislike,
-					},
-				},
-				Notes: &notes,
-			},
-		},
-		Page:     &pg,
-		PageSize: &pgSize,
-		Total:    &total,
+
+	dbRows, err := f.FoodPostsService.ListFoodPosts(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.Error{
+			Message: err.Error(),
+		})
 	}
-	c.JSON(200, fpl)
+
+	//convert dbRows to APIresult
+	listFoodPosts, err := MapListFoodPostsRowToAPIFoodPost(dbRows)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.Error{
+			Message: err.Error(),
+		})
+	}
+
+	c.JSON(http.StatusOK, listFoodPosts)
+
+	//p := "Parsippany"
+	//nj := "New Jersey"
+	//usa := "USA"
+	//t := time.Now()
+	//id := "121"
+	//add1 := "1008 Route 36"
+	//notes := "overall great experience"
+	//pg := 1
+	//pgSize := 10
+	//total := 100
+	//fpl := model.FoodPostsList{
+	//	FoodPosts: &[]model.FoodPost{
+	//		{
+	//			Id:             &id,
+	//			RestaurantName: "Adayar Ananda Bhavan",
+	//			City:           &p,
+	//			State:          &nj,
+	//			Country:        &usa,
+	//			Date:           &t,
+	//			Address1:       &add1,
+	//			FoodItems: []model.FoodItems{
+	//				{
+	//					Name:       "Full Meals",
+	//					Experience: model.FoodItemsExperienceLike,
+	//				},
+	//				{
+	//					Name:       "Chikoo Milk Shake",
+	//					Experience: model.FoodItemsExperienceFavorite,
+	//				},
+	//				{
+	//					Name:       "Chole Bature",
+	//					Experience: model.FoodItemsExperienceDislike,
+	//				},
+	//			},
+	//			Notes: &notes,
+	//		},
+	//	},
+	//	Page:     &pg,
+	//	PageSize: &pgSize,
+	//	Total:    &total,
+	//}
+	//c.JSON(200, fpl)
 }
 
 func (f *RESTController) CreateFoodPost(c *gin.Context) {

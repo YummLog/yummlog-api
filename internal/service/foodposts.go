@@ -6,7 +6,7 @@ import (
 )
 
 type FoodPostsCRUD interface {
-	ListFoodPosts() ([]db.ListFoodPostsRow, error)
+	ListFoodPosts(ctx context.Context) ([]db.ListFoodPostsRow, error)
 	CreateFoodPosts(ctx context.Context, fp db.Foodpost, pd []db.Postdetail) (db.Foodpost, []db.Postdetail, error)
 }
 
@@ -24,8 +24,8 @@ func NewFoodPostsCRUD(ctx context.Context, reader *db.Queries, writer *db.Querie
 	}
 }
 
-func (fps *FoodPostsService) ListFoodPosts() ([]db.ListFoodPostsRow, error) {
-	return nil, nil
+func (fps *FoodPostsService) ListFoodPosts(ctx context.Context) ([]db.ListFoodPostsRow, error) {
+	return fps.Reader.ListFoodPosts(ctx)
 }
 
 func (fps *FoodPostsService) CreateFoodPosts(ctx context.Context, fp db.Foodpost, pd []db.Postdetail) (db.Foodpost, []db.Postdetail, error) {
