@@ -2,6 +2,7 @@ package controller
 
 import (
 	"database/sql"
+	"yummlog/internal"
 	"yummlog/internal/db"
 	"yummlog/internal/model"
 	"yummlog/internal/service"
@@ -44,6 +45,14 @@ func MapAPIFoodPostToDBFoodpost(fp model.FoodPost) (db.Foodpost, error) {
 		return db.Foodpost{}, err
 	}
 
+	if fp.Id == nil || *fp.Id == "" {
+		foodPostsUUID, err := internal.GetNewUUID()
+		if err != nil {
+			return db.Foodpost{}, err
+		}
+		fp.Id = &foodPostsUUID
+	}
+
 	return db.Foodpost{
 		ID:             *fp.Id,
 		RestaurantName: fp.RestaurantName,
@@ -62,10 +71,15 @@ func MapAPIFoodPostToDBFoodpost(fp model.FoodPost) (db.Foodpost, error) {
 	}, nil
 }
 
-func MapAPIFoodPostToDBPostDetails(pd model.FoodItems) (db.Postdetail, error) {
+func MapAPIFoodPostToDBPostDetails(pd model.FoodItems, foodPostsId string) (db.Postdetail, error) {
+	postDetailsUUID, err := internal.GetNewUUID()
+	if err != nil {
+		return db.Postdetail{}, err
+	}
+
 	return db.Postdetail{
-		ID:         "",
-		PostID:     "",
+		ID:         postDetailsUUID,
+		PostID:     foodPostsId,
 		Item:       pd.Name,
 		Experience: string(pd.Experience),
 	}, nil

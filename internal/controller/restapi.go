@@ -77,7 +77,7 @@ func (f *RESTController) CreateFoodPost(c *gin.Context) {
 
 	var dbPostDetails []db.Postdetail
 	for _, fi := range foodPost.FoodItems {
-		pd, pdErr := MapAPIFoodPostToDBPostDetails(fi)
+		pd, pdErr := MapAPIFoodPostToDBPostDetails(fi, dbFoodPost.ID)
 		if pdErr != nil {
 			c.JSON(http.StatusInternalServerError, model.Error{
 				Message: pdErr.Error(),
