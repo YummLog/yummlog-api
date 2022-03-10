@@ -10,12 +10,12 @@ import (
 func main() {
 
 	router := gin.Default()
+	router.Use(cors.Default())
 	api := controller.RESTController{}
 
 	router = model.RegisterHandlersWithOptions(router, &api, model.GinServerOptions{
 		BaseURL: "/v1",
 	})
-	router.Use(cors.Default())
 
 	_ = router.Run(":3000")
 }
