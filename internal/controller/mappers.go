@@ -142,7 +142,7 @@ func MapDBPostDetailsToAPIPostDetails(postDetails db.Postdetail) (model.FoodItem
 
 func MapListFoodPostsRowToAPIFoodPost(listFoodPosts []db.ListFoodPostsRow) (*[]model.FoodPost, error) {
 
-	idToPostMap := make(map[string]model.FoodPost)
+	idToPostMap := make(map[string]*model.FoodPost)
 	var foodPosts []model.FoodPost
 
 	for _, foodPostsRow := range listFoodPosts {
@@ -150,11 +150,11 @@ func MapListFoodPostsRowToAPIFoodPost(listFoodPosts []db.ListFoodPostsRow) (*[]m
 			Experience: model.FoodItemsExperience(foodPostsRow.Experience),
 			Name:       foodPostsRow.Item,
 		}
-		var foodPost model.FoodPost
+		var foodPost *model.FoodPost
 		var ok bool
 		//check if record was already created
 		if foodPost, ok = idToPostMap[foodPostsRow.ID]; !ok {
-			foodPost = model.FoodPost{
+			foodPost = &model.FoodPost{
 				Id:             &foodPostsRow.ID,
 				Address1:       &foodPostsRow.Address1.String,
 				Address2:       &foodPostsRow.Address2.String,
@@ -167,14 +167,15 @@ func MapListFoodPostsRowToAPIFoodPost(listFoodPosts []db.ListFoodPostsRow) (*[]m
 				Zip:            &foodPostsRow.Zipcode.String,
 				FoodItems:      []model.FoodItems{foodItem},
 			}
+			idToPostMap[foodPostsRow.ID] = foodPost
 		} else {
 			foodPost.FoodItems = append(foodPost.FoodItems, foodItem)
 		}
-		idToPostMap[foodPostsRow.ID] = foodPost
+
 	}
 
 	for _, post := range idToPostMap {
-		foodPosts = append(foodPosts, post)
+		foodPosts = append(foodPosts, *post)
 	}
 
 	return &foodPosts, nil
