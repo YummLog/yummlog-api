@@ -118,7 +118,7 @@ func (q *Queries) CreatePostDetails(ctx context.Context, arg CreatePostDetailsPa
 
 const listFoodPosts = `-- name: ListFoodPosts :many
 SELECT fp.id, fp.restaurant_name, fp.address1, fp.address2, fp.city, fp.state, fp.country, fp.zipcode, fp.user_id, fp.created_by, fp.created_date, fp.updated_by, fp.updated_date, fp.notes, pd.item, pd.experience
-FROM foodposts fp join postdetails pd on fp.id = pd.post_id
+FROM foodposts fp left join postdetails pd on fp.id = pd.post_id
 ORDER BY fp.created_date, fp.id asc
 `
 
@@ -137,8 +137,8 @@ type ListFoodPostsRow struct {
 	UpdatedBy      sql.NullString
 	UpdatedDate    sql.NullTime
 	Notes          sql.NullString
-	Item           string
-	Experience     string
+	Item           sql.NullString
+	Experience     sql.NullString
 }
 
 func (q *Queries) ListFoodPosts(ctx context.Context) ([]ListFoodPostsRow, error) {

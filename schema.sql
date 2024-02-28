@@ -18,9 +18,6 @@ create table foodposts
     notes           text
 );
 
-
-
-
 create table postdetails
 (
     id         text not null

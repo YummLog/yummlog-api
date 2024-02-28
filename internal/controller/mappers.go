@@ -3,6 +3,8 @@ package controller
 import (
 	"database/sql"
 	"time"
+
+	uuid2 "github.com/google/uuid"
 	"yummlog/internal"
 	"yummlog/internal/db"
 	"yummlog/internal/model"
@@ -46,7 +48,7 @@ func MapAPIFoodPostToDBFoodpost(fp model.FoodPost) (db.Foodpost, error) {
 		return db.Foodpost{}, err
 	}
 
-	if fp.Id == nil || *fp.Id == "" {
+	if fp.Id == nil {
 		foodPostsUUID, err := internal.GetNewUUID()
 		if err != nil {
 			return db.Foodpost{}, err
@@ -60,7 +62,7 @@ func MapAPIFoodPostToDBFoodpost(fp model.FoodPost) (db.Foodpost, error) {
 	}
 
 	return db.Foodpost{
-		ID:             *fp.Id,
+		ID:             fp.Id.String(),
 		RestaurantName: fp.RestaurantName,
 		Address1:       address1,
 		Address2:       address2,
@@ -90,7 +92,7 @@ func MapAPIFoodPostToDBPostDetails(pd model.FoodItems, foodPostsId string) (db.P
 	}
 
 	return db.Postdetail{
-		ID:         postDetailsUUID,
+		ID:         postDetailsUUID.String(),
 		PostID:     foodPostsId,
 		Item:       pd.Name,
 		Experience: string(pd.Experience),
@@ -119,13 +121,19 @@ func MapDBPostAndDetailsToAPIFoodpost(foodpost db.Foodpost, postDetails []db.Pos
 }
 
 func MapDBFoodPostToAPIFoodPost(foodpost db.Foodpost) (model.FoodPost, error) {
+
+	uuid, err := uuid2.Parse(foodpost.ID)
+	if err != nil {
+		return model.FoodPost{}, err
+	}
+
 	return model.FoodPost{
 		Address1:       &foodpost.Address1.String,
 		Address2:       &foodpost.Address2.String,
 		City:           &foodpost.City.String,
 		Country:        &foodpost.Country.String,
 		Date:           &foodpost.CreatedDate.Time,
-		Id:             &foodpost.ID,
+		Id:             &uuid,
 		Notes:          &foodpost.Notes.String,
 		RestaurantName: foodpost.RestaurantName,
 		State:          &foodpost.State.String,
@@ -147,15 +155,21 @@ func MapListFoodPostsRowToAPIFoodPost(listFoodPosts []db.ListFoodPostsRow) (*[]m
 
 	for _, foodPostsRow := range listFoodPosts {
 		foodItem := model.FoodItems{
-			Experience: model.FoodItemsExperience(foodPostsRow.Experience),
-			Name:       foodPostsRow.Item,
+			Experience: model.FoodItemsExperience(foodPostsRow.Experience.String),
+			Name:       foodPostsRow.Item.String,
 		}
 		var foodPost *model.FoodPost
 		var ok bool
+
+		u, err := uuid2.Parse(foodPostsRow.ID)
+		if err != nil {
+			return nil, err
+		}
+
 		//check if record was already created
 		if foodPost, ok = idToPostMap[foodPostsRow.ID]; !ok {
 			foodPost = &model.FoodPost{
-				Id:             &foodPostsRow.ID,
+				Id:             &u,
 				Address1:       &foodPostsRow.Address1.String,
 				Address2:       &foodPostsRow.Address2.String,
 				City:           &foodPostsRow.City.String,

@@ -4,9 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
+
 	"github.com/kelseyhightower/envconfig"
 	_ "github.com/lib/pq"
-	"log"
 	"yummlog/internal/controller"
 	"yummlog/internal/db"
 	"yummlog/internal/service"
@@ -21,8 +22,8 @@ type AppConfig struct {
 type DBReadConfig struct {
 	Host     string `envconfig:"DB_READ_HOST" default:"localhost"`
 	Port     int    `envconfig:"DB_READ_PORT" default:"5432""`
-	User     string `envconfig:"DB_READ_USER" default:"root"`
-	Password string `envconfig:"DB_READ_PASSWORD" default:"root"`
+	User     string `envconfig:"DB_READ_USER" default:"api_reader"`
+	Password string `envconfig:"DB_READ_PASSWORD" default:"api_reader"`
 	DB       string `envconfig:"DB_READ_NAME" default:"yummlog"`
 	Schema   string `envconfig:"DB_READ_SCHEMA_NAME" default:"yummlog"`
 	SSLMode  string `envconfig:"DB_READ_SSL_MODE" default:"disable"`
@@ -36,8 +37,8 @@ func (dbr DBReadConfig) ConnectionString() string {
 type DBWriteConfig struct {
 	Host     string `envconfig:"DB_WRITE_HOST" default:"localhost"`
 	Port     int    `envconfig:"DB_WRITE_PORT" default:"5432"`
-	User     string `envconfig:"DB_WRITE_USER" default:"root"`
-	Password string `envconfig:"DB_WRITE_PASSWORD" default:"root"`
+	User     string `envconfig:"DB_WRITE_USER" default:"api_writer"`
+	Password string `envconfig:"DB_WRITE_PASSWORD" default:"api_writer"`
 	DB       string `envconfig:"DB_WRITE_NAME" default:"yummlog"`
 	Schema   string `envconfig:"DB_WRITE_SCHEMA_NAME" default:"yummlog"`
 	SSLMode  string `envconfig:"DB_WRITE_SSL_MODE" default:"disable"`

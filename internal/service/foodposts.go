@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	"yummlog/internal/db"
 )
 
@@ -40,20 +41,20 @@ func (fps *FoodPostsService) CreateFoodPosts(ctx context.Context, fp db.Foodpost
 		return db.Foodpost{}, nil, err
 	}
 
-	var createdPostDetails []db.Postdetail
-	for _, postDetail := range pd {
-		a, e := MapDBPostDetailsToDBCreatePostDetailsParams(postDetail)
-		if e != nil {
-			return db.Foodpost{}, nil, err
-		}
+	//var createdPostDetails []db.Postdetail
+	//for _, postDetail := range pd {
+	//	a, e := MapDBPostDetailsToDBCreatePostDetailsParams(postDetail)
+	//	if e != nil {
+	//		return db.Foodpost{}, nil, err
+	//	}
+	//
+	//	a.PostID = createdFoodPost.ID
+	//	cpd, e := fps.Writer.CreatePostDetails(ctx, a)
+	//	if e != nil {
+	//		return db.Foodpost{}, nil, err
+	//	}
+	//	createdPostDetails = append(createdPostDetails, cpd)
+	//}
 
-		a.PostID = createdFoodPost.ID
-		cpd, e := fps.Writer.CreatePostDetails(ctx, a)
-		if e != nil {
-			return db.Foodpost{}, nil, err
-		}
-		createdPostDetails = append(createdPostDetails, cpd)
-	}
-
-	return createdFoodPost, createdPostDetails, nil
+	return createdFoodPost, nil, nil
 }

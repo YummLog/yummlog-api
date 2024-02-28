@@ -2,10 +2,11 @@ package internal
 
 import "github.com/google/uuid"
 
-func GetNewUUID() (string, error) {
+func GetNewUUID() (uuid.UUID, error) {
+	var u uuid.UUID
 	u, err := uuid.NewUUID()
 	if err != nil {
-		return "", err
+		return u, err
 	}
-	return u.String(), nil
+	return u, nil
 }
